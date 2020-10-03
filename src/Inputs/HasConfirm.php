@@ -33,4 +33,22 @@ trait HasConfirm
     {
         return $this->setConfirm(new Confirm($title, $text, $confirm, $deny));
     }
+
+    /**
+     * @param array $content
+     * @return void
+     */
+    protected function parseConfirm(array &$content): void
+    {
+
+        if (! isset($content['confirm'])) {
+            return;
+        }
+
+        $this->setConfirm((new Confirm())->parse($content['confirm']));
+        unset($content['confirm']);
+
+    }
+
+
 }

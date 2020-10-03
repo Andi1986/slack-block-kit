@@ -8,13 +8,13 @@ use Jeremeamia\Slack\BlockKit\{Element, Exception, Inputs, Partials, Type};
 
 class Input extends BlockElement
 {
-    /** @var Partials\PlainText */
+    /** @var Partials\Text */
     private $label;
 
     /** @var Element */
     private $element;
 
-    /** @var Partials\PlainText */
+    /** @var Partials\Text */
     private $hint;
 
     /** @var bool */
@@ -40,7 +40,7 @@ class Input extends BlockElement
         $this->optional = false;
     }
 
-    public function setLabel(Partials\PlainText $label): self
+    public function setLabel(Partials\Text $label): self
     {
         $this->label = $label->setParent($this);
 
@@ -62,7 +62,7 @@ class Input extends BlockElement
         return $this;
     }
 
-    public function setHint(Partials\PlainText $hint): self
+    public function setHint(Partials\Text $hint): self
     {
         $this->hint = $hint->setParent($this);
 
@@ -114,6 +114,11 @@ class Input extends BlockElement
         $this->setElement($action);
 
         return $action;
+    }
+
+    public function newPlainTextInput(?string $actionId = null): Inputs\TextInput
+    {
+        return $this->newTextInput($actionId);
     }
 
     public function newRadioButtons(?string $actionId = null): Inputs\RadioButtons
@@ -170,4 +175,29 @@ class Input extends BlockElement
 
         return $data;
     }
+
+    public function parse(array $content): Element {
+
+        if (! isset($content['element'])) {
+            throw new Exception('input has no element');
+        }
+
+        $element = $content['element'];
+        $method = $this->snakeToCamel('new_' . $element['type'] ?? '');
+
+        if (! method_exists($this, $method)) {
+            throw new Exception('type ' . $element['type'] . ' for input is invalid');
+        }
+
+        $this->$method($element['action_id'] ?? null)->parse($element);
+
+        unset ($content['element']);
+        parent::parse($content);
+
+        return $this;
+
+    }
+
+
+
 }

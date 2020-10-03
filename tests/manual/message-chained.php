@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Jeremeamia\Slack\BlockKit\Blocks\{Actions, Context, Image, Section};
+use Jeremeamia\Slack\BlockKit\Blocks\{Actions, Context, Divider, Image, Section};
 use Jeremeamia\Slack\BlockKit\Inputs\Button;
 use Jeremeamia\Slack\BlockKit\Inputs\DatePicker;
 use Jeremeamia\Slack\BlockKit\Renderers;
@@ -19,7 +19,8 @@ $msg = Message::new()
             ->actionId('a1')
             ->text('Click me!')
             ->value('two')))
-    ->divider('b2')
+    ->add(Divider::new()
+        ->blockId('b2'))
     ->add(Image::new()
         ->blockId('b3')
         ->title('This meeting has gone off the rails!')

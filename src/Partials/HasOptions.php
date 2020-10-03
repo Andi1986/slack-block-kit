@@ -186,4 +186,27 @@ trait HasOptions
             return $initialOption->toArray();
         }, $this->initialOptions)];
     }
+
+    /**
+     * @param array $content
+     * @return void
+     */
+    protected function parseOptions(array &$content): void
+    {
+
+        if (! isset($content['options'])) {
+            return;
+        }
+
+        $initialOptions = $content['initial_options'] ?? [$content['initial_option'] ?? []];
+
+        foreach ($content['options'] as $option) {
+            $isInitial = in_array($option, $initialOptions);
+            $this->addOption((new Option())->parse($option), $isInitial);
+        }
+
+        unset($content['options'], $content['initial_options'], $content['initial_option']);
+
+    }
+
 }

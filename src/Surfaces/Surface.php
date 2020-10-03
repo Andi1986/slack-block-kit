@@ -134,6 +134,19 @@ abstract class Surface extends Element
     }
 
     /**
+     * @param string|null $blockId
+     * @return Divider
+     */
+    public function newDivider(?string $blockId = null): Divider
+    {
+        $block = new Divider($blockId);
+        $this->add($block);
+
+        return $block;
+    }
+
+
+    /**
      * @param string $text
      * @param string|null $blockId
      * @return static
@@ -173,4 +186,31 @@ abstract class Surface extends Element
 
         return $data;
     }
+
+    public function parse(array $content): Element {
+
+        foreach ($content['blocks'] ?? [] as $block) {
+
+            if (! isset ($block['type'])) {
+                throw new Exception('block has no type!');
+            }
+
+            $method = $this->snakeToCamel('new_' . ($block['type'] ?? ''));
+
+            if (! method_exists($this, $method)) {
+                throw new Exception('type ' . $block['type'] . ' for the block is invalid');
+            }
+
+            $this->$method($block['block_id'] ?? null)->parse($block);
+
+        }
+
+        unset($content['blocks']);
+
+        parent::parse($content);
+
+        return $this;
+
+    }
+
 }

@@ -234,4 +234,39 @@ class Section extends BlockElement
 
         return $data;
     }
+
+    public function parse(array $content): Element {
+
+        foreach ($content as $key => $value) {
+
+            switch ($key) {
+
+                case 'type': // skip
+                    break;
+
+                case 'text': {
+                    $this->setText(Partials\Text::create($value)->parse($value));
+                    break;
+
+                }
+
+
+            }
+
+//            $method = $this->snakeToCamel($element['type'] ?? '');
+//
+//            if (! method_exists($this, $method)) {
+//                throw new Exception('type ' . $element['type'] . ' for the element is invalid');
+//            }
+//
+//            /** @var Element $obj */
+//            $obj = $this->$method($element['action_id'] ?? null);
+//            $obj->parse($element);
+
+        }
+
+        return $this;
+
+    }
+
 }

@@ -13,7 +13,7 @@ $msg->newSection('b1')
     ->newButtonAccessory('a1')
         ->text('Click me!')
         ->value('two');
-$msg->divider('b2');
+$msg->newDivider('b2');
 $msg->newImage('b3')
     ->title('This meeting has gone off the rails!')
     ->url('https://i.imgflip.com/3dezi8.jpg')

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jeremeamia\Slack\BlockKit;
 
-use Jeremeamia\Slack\BlockKit\Surfaces\{AppHome, Message, Modal};
+use Jeremeamia\Slack\BlockKit\Surfaces\{AppHome, Message, Modal, Surface};
 use Jeremeamia\Slack\BlockKit\Renderers\RendererFactory;
 
 abstract class Slack

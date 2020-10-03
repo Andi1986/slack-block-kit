@@ -1,0 +1,474 @@
+diff --git a/composer.lock b/composer.lock
+index 7c899e2..f98dd11 100644
+--- a/composer.lock
++++ b/composer.lock
+@@ -2829,6 +2829,5 @@
+         "php": ">=7.2",
+         "ext-json": "*"
+     },
+-    "platform-dev": [],
+-    "plugin-api-version": "1.1.0"
++    "platform-dev": []
+ }
+diff --git a/src/Element.php b/src/Element.php
+index 7bf06e5..f3ebe3c 100644
+--- a/src/Element.php
++++ b/src/Element.php
+@@ -4,11 +4,9 @@ declare(strict_types=1);
+ 
+ namespace Jeremeamia\Slack\BlockKit;
+ 
+-use Jeremeamia\Slack\BlockKit\Parser\Parsable;
+-use Jeremeamia\Slack\BlockKit\Surfaces\Surface;
+ use JsonSerializable;
+ 
+-abstract class Element implements JsonSerializable, Parsable
++abstract class Element implements JsonSerializable
+ {
+     /** @var Element|null */
+     protected $parent;
+@@ -92,93 +90,6 @@ abstract class Element implements JsonSerializable, Parsable
+ 
+         return $data;
+     }
+-//
+-//    /**
+-//     * why "parseAbstract" and not "parse"?
+-//     * -> so it's made sure every concrete class from Element will implement parse method
+-//     *
+-//     * @param array $content
+-//     * @return static
+-//     */
+-//    public static function parseAbstract(array $content) {
+-//
+-//        $element = new static();
+-//
+-//        if ($content['extra'])
+-//
+-////        if () {
+-////            $element->set
+-////        }
+-////
+-////        if (! empty($content['title'])) {
+-////            $modal->setTitle(PlainText::parse($content['title']));
+-////        }
+-//
+-//        return $element;
+-//
+-//
+-//    }
+-//
+-
+-    /** Element|Surface */
+-    public static function parse(array $content) {
+-
+-        foreach ($content as $key => $value) {
+-
+-            if ($key === 'type') {
+-                continue;
+-            }
+-
+-            if (is_array($value)) {
+-
+-                if (! empty($value['type'])) {
+-
+-                }
+-
+-                $key
+-
+-            }
+-
+-            $property = self::snakeToCamel($key);
+-
+-            if (method_exists($element, $property)) {
+-                $element->$property($value);
+-            }
+-//                else if (is_array($value)) {
+-//                    $element->setExtra($key, $value);
+-//                }
+-
+-        }
+-
+-
+-
+-        // if we have a type, we have an Object
+-        if (! empty($content['type'])) {
+-
+-            /** @var Element|Surface $element */
+-            $element =  new (Type::mapType($content['type']))();
+-
+-
+-
+-        }
+-
+-
+-
+-    }
+-
+-    private static function snakeToCamel ($str) {
+-        // Remove underscores, capitalize words, squash, lowercase first. (Example: one_two_three --> oneTwoThree)
+-        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $str))));
+-    }
+-
+-
+-
+-
+-
+-
+-
+-
+-
+ 
+     /**
+      * @return array
+diff --git a/src/Parser/Parsable.php b/src/Parser/Parsable.php
+deleted file mode 100644
+index 24da084..0000000
+--- a/src/Parser/Parsable.php
++++ /dev/null
+@@ -1,15 +0,0 @@
+-<?php
+-
+-declare(strict_types = 1);
+-
+-namespace Jeremeamia\Slack\BlockKit\Parser;
+-
+-interface Parsable {
+-
+-    /**
+-     * @param array $content
+-     * @return mixed (in php 7.4 we could use Element as return type but we have 7.2);
+-     */
+-    //public static function parse(array $content);
+-
+-}
+diff --git a/src/Parser/Parser.php b/src/Parser/Parser.php
+deleted file mode 100644
+index a31a686..0000000
+--- a/src/Parser/Parser.php
++++ /dev/null
+@@ -1,56 +0,0 @@
+-<?php
+-
+-declare(strict_types = 1);
+-
+-namespace Jeremeamia\Slack\BlockKit\Parser;
+-use Jeremeamia\Slack\BlockKit\Surfaces\{AppHome, Message, Modal, Surface};
+-use Jeremeamia\Slack\BlockKit\Element;
+-use Jeremeamia\Slack\BlockKit\Type;
+-
+-class Parser implements Parsable
+-{
+-
+-    /** Element|Surface */
+-    public static function parse(array $content) {
+-
+-        // if we have a type, we have an Object
+-        if (! empty($content['type'])) {
+-
+-            /** @var Element|Surface $element */
+-            $element =  new (Type::mapType($content['type']))();
+-
+-            foreach ($content as $key => $value) {
+-
+-                if ($key === 'type') {
+-                    continue;
+-                }
+-
+-                if (is_array($value)) {
+-
+-                }
+-
+-                $property = self::snakeToCamel($key);
+-
+-                if (method_exists($element, $property)) {
+-                    $element->$property($value);
+-                }
+-//                else if (is_array($value)) {
+-//                    $element->setExtra($key, $value);
+-//                }
+-
+-            }
+-
+-        }
+-
+-
+-
+-    }
+-
+-    private static function snakeToCamel ($str) {
+-        // Remove underscores, capitalize words, squash, lowercase first. (Example: one_two_three --> oneTwoThree)
+-        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $str))));
+-    }
+-
+-
+-}
+-
+diff --git a/src/Partials/PlainText.php b/src/Partials/PlainText.php
+index 84a644f..c596aca 100644
+--- a/src/Partials/PlainText.php
++++ b/src/Partials/PlainText.php
+@@ -46,15 +46,4 @@ class PlainText extends Text
+ 
+         return $data;
+     }
+-
+-    public static function parse(array $content): self {
+-
+-        $plainText = parent::parseAbstract($content);
+-
+-        if (! empty($content['title'])) {
+-            $plainText->setTitle(PlainText::parse($content['title']));
+-        }
+-
+-
+-    }
+ }
+diff --git a/src/Partials/Text.php b/src/Partials/Text.php
+index b2cb8ee..8530609 100644
+--- a/src/Partials/Text.php
++++ b/src/Partials/Text.php
+@@ -67,23 +67,4 @@ abstract class Text extends Element
+     {
+         return parent::toArray() + ['text' => $this->text];
+     }
+-
+-    /**
+-     * @param array $content
+-     * @return mixed
+-     */
+-    public static function parseAbstract(array $content) {
+-
+-        $text = parent::parseAbstract($content);
+-
+-//        if (! empty($content['title'])) {
+-//            $modal->setTitle(PlainText::parse($content['title']));
+-//        }
+-
+-        return $text;
+-
+-
+-    }
+-
+-
+ }
+diff --git a/src/Slack.php b/src/Slack.php
+index 705f3f4..d6b3dbd 100644
+--- a/src/Slack.php
++++ b/src/Slack.php
+@@ -4,7 +4,7 @@ declare(strict_types=1);
+ 
+ namespace Jeremeamia\Slack\BlockKit;
+ 
+-use Jeremeamia\Slack\BlockKit\Surfaces\{AppHome, Message, Modal, Surface};
++use Jeremeamia\Slack\BlockKit\Surfaces\{AppHome, Message, Modal};
+ use Jeremeamia\Slack\BlockKit\Renderers\RendererFactory;
+ 
+ abstract class Slack
+diff --git a/src/Surfaces/Modal.php b/src/Surfaces/Modal.php
+index 47c404f..c89b5de 100644
+--- a/src/Surfaces/Modal.php
++++ b/src/Surfaces/Modal.php
+@@ -4,7 +4,7 @@ declare(strict_types=1);
+ 
+ namespace Jeremeamia\Slack\BlockKit\Surfaces;
+ 
+-use Jeremeamia\Slack\BlockKit\{Blocks\Input, Element, Exception, Partials\PlainText, Type};
++use Jeremeamia\Slack\BlockKit\{Blocks\Input, Exception, Partials\PlainText, Type};
+ 
+ /**
+  * Modals provide focused spaces ideal for requesting and collecting data from users, or temporarily displaying dynamic
+@@ -40,27 +40,42 @@ class Modal extends Surface
+     /** @var bool */
+     private $notifyOnClose;
+ 
+-    public function title(string $title): self
++    public function setTitle(PlainText $title): self
+     {
+-        $this->title = (new PlainText($title))->setParent($this);
++        $this->title = $title->setParent($this);
+ 
+         return $this;
+     }
+ 
+-    public function submit(string $submit): self
++    public function setSubmit(PlainText $title): self
+     {
+-        $this->submit = (new PlainText($submit))->setParent($this);
++        $this->submit = $title->setParent($this);
+ 
+         return $this;
+     }
+ 
+-    public function close(string $close): self
++    public function setClose(PlainText $title): self
+     {
+-        $this->close = (new PlainText($close))->setParent($this);
++        $this->close = $title->setParent($this);
+ 
+         return $this;
+     }
+ 
++    public function title(string $title): self
++    {
++        return $this->setTitle(new PlainText($title));
++    }
++
++    public function submit(string $submit): self
++    {
++        return $this->setSubmit(new PlainText($submit));
++    }
++
++    public function close(string $close): self
++    {
++        return $this->setClose(new PlainText($close));
++    }
++
+     public function externalId(string $externalId): self
+     {
+         $this->externalId = $externalId;
+@@ -163,44 +178,4 @@ class Modal extends Surface
+ 
+         return $data;
+     }
+-
+-//    public static function parse(array $content): self {
+-//
+-//        $modal = new self();
+-//
+-//        if (! empty($content['title'])) {
+-//            $modal->setTitle(PlainText::parse($content['title']));
+-//        }
+-//
+-//        if (! empty($content['submit'])) {
+-//            $modal->setSubmit(PlainText::parse($content['submit']));
+-//        }
+-//
+-//        if (! empty($content['close'])) {
+-//            $modal->setClose(PlainText::parse($content['close']));
+-//        }
+-//
+-//        if (!empty($content['external_id'])) {
+-//            $modal->externalId($content['external_id']);
+-//        }
+-//
+-//        if (!empty($content['callback_id'])) {
+-//            $modal->callbackId($content['callback_id']);
+-//        }
+-//
+-//        if (!empty($content['private_metadata'])) {
+-//            $modal->privateMetadata($content['private_metadata']);
+-//        }
+-//
+-//        if (!empty($content['clear_on_close'])) {
+-//            $modal->clearOnClose($content['clear_on_close']);
+-//        }
+-//
+-//        if (!empty($content['notify_on_close'])) {
+-//            $modal->notifyOnClose($content['notify_on_close']);
+-//        }
+-//
+-//        return $modal;
+-//
+-//    }
+ }
+diff --git a/src/Type.php b/src/Type.php
+index 485a863..788b785 100644
+--- a/src/Type.php
++++ b/src/Type.php
+@@ -186,15 +186,4 @@ abstract class Type
+ 
+         return self::$typeMap[$class];
+     }
+-
+-    public static function mapType(string $type): string {
+-
+-        if ($class = array_search($type, self::$typeMap, true)) {
+-            return $class;
+-        }
+-
+-        throw new Exception('No class for type: %s', [$type]);
+-
+-    }
+-
+ }
+diff --git a/tests/Parser/ParserTest.php b/tests/Parser/ParserTest.php
+deleted file mode 100644
+index 9ca58a0..0000000
+--- a/tests/Parser/ParserTest.php
++++ /dev/null
+@@ -1,61 +0,0 @@
+-<?php
+-
+-declare(strict_types = 1);
+-
+-use \Jeremeamia\Slack\BlockKit\Tests\TestCase;
+-use \Jeremeamia\Slack\BlockKit\Slack;
+-use \Jeremeamia\Slack\BlockKit\Parser\Parser;
+-
+-/**
+- * @covers \Jeremeamia\Slack\BlockKit\Surfaces\Surface
+- */
+-class ParserTest extends TestCase
+-{
+-
+-    public function testModal()
+-    {
+-
+-        $msg = Slack::newModal();
+-//            ->title('My Modal')
+-//            ->submit('Submit')
+-//            ->close('Cancel')
+-//            ->privateMetadata('foo=bar')
+-//            ->text('Hello!', 'b1');
+-//        $msg->newInput('b2')
+-//            ->label('Date')
+-//            ->newDatePicker('a1')
+-//            ->placeholder('Choose a date')
+-//            ->initialDate('2020-01-01');
+-//        $msg->newInput('c1')
+-//            ->label('Multiline')
+-//            ->newTextInput('text_input')
+-//            ->placeholder('Text Input')
+-//            ->multiline(true)
+-//            ->minLength(10)
+-//            ->maxLength(100);
+-//        $msg->newInput('c2')
+-//            ->label('Radio Buttons')
+-//            ->newRadioButtons('radio_buttons')
+-//            ->option('foo', 'foo')
+-//            ->option('bar', 'bar', true)
+-//            ->option('foobar', 'foobar')
+-//            ->setConfirm(new Confirm('Switch', 'Do you really want to switch?', 'Yes switch'));
+-//        $msg->newInput('c3')
+-//            ->label('Checkboxes')
+-//            ->newCheckboxes('checkboxes')
+-//            ->option('foo', 'foo')
+-//            ->option('bar', 'bar', true)
+-//            ->option('foobar', 'foobar', true)
+-//            ->setConfirm(new Confirm('Switch', 'Do you really want to switch?', 'Yes switch'));
+-
+-
+-        $array = $msg->toArray();
+-
+-        $obj = Parser::parse($array);
+-
+-        assertEquals($array, $obj->toArray());
+-
+-
+-    }
+-
+-}
+diff --git a/tests/manual/modal.php b/tests/manual/modal.php
+index 76562e8..e83ce08 100644
+--- a/tests/manual/modal.php
++++ b/tests/manual/modal.php
+@@ -41,6 +41,6 @@ $msg->newInput('c3')
+     ->option('foobar', 'foobar', true)
+     ->setConfirm(new Confirm('Switch', 'Do you really want to switch?', 'Yes switch'));
+ 
+- echo Slack::newRenderer()->forJson()->render($msg) . "\n";
+-//echo Slack::newRenderer()->forKitBuilder()->render($msg) . "\n";
++// echo Slack::newRenderer()->forJson()->render($msg) . "\n";
++echo Slack::newRenderer()->forKitBuilder()->render($msg) . "\n";
+ // echo Slack::newRenderer()->forCli()->render($msg) . "\n";

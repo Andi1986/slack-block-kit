@@ -74,7 +74,7 @@ use Jeremeamia\Slack\BlockKit\Slack;
 
 $msg = Slack::newMessage();
 $msg->text('Don\'t you just love XKCD?');
-$msg->divider();
+$msg->newDivider();
 $msg->newImage()
     ->title('Team Chat')
     ->url('https://imgs.xkcd.com/comics/team_chat.png')

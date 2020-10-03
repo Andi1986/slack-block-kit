@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Jeremeamia\Slack\BlockKit\Partials\Confirm;
 use Jeremeamia\Slack\BlockKit\Slack;
-use Jeremeamia\Slack\BlockKit\Partials\Option;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -41,6 +40,15 @@ $msg->newInput('c3')
     ->option('foobar', 'foobar', true)
     ->setConfirm(new Confirm('Switch', 'Do you really want to switch?', 'Yes switch'));
 
-// echo Slack::newRenderer()->forJson()->render($msg) . "\n";
+
+$array = $msg->toArray();
+echo 'SOLL: ';
+print_r($array);
+
+$msg = \Jeremeamia\Slack\BlockKit\Parser\Parser::parse($array);
+echo 'IST: ';
+die (print_r($msg->toArray(), true));
+
+//echo Slack::newRenderer()->forJson()->render($msg) . "\n";
 echo Slack::newRenderer()->forKitBuilder()->render($msg) . "\n";
 // echo Slack::newRenderer()->forCli()->render($msg) . "\n";

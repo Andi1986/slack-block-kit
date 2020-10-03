@@ -2829,5 +2829,6 @@
         "php": ">=7.2",
         "ext-json": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

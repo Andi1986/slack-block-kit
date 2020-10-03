@@ -127,4 +127,24 @@ class Actions extends BlockElement
 
         return $data;
     }
+
+    public function parse(array $content): Element {
+
+        foreach ($content['elements'] ?? [] as $element) {
+
+            if (! isset ($element['type'])) {
+                throw new Exception('element has no type!');
+            }
+
+            $method = $this->snakeToCamel($element['type'] ?? '');
+
+            if (! method_exists($this, $method)) {
+                throw new Exception('type ' . $element['type'] . ' for the element is invalid');
+            }
+
+            $this->$method($element['action_id'] ?? null)->parse($element);
+
+        }
+
+    }
 }

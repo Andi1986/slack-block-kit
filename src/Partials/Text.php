@@ -11,6 +11,11 @@ abstract class Text extends Element
     /** @var string */
     private $text;
 
+    public const TYPES = [
+        'mrkdwn',
+        'plain_text',
+    ];
+
     /**
      * @param string $text
      * @return static
@@ -67,4 +72,22 @@ abstract class Text extends Element
     {
         return parent::toArray() + ['text' => $this->text];
     }
+
+    public static function create($content): self {
+
+        switch ($content['type'] ?? '') {
+
+            case 'mrkdwn':
+                return new MrkdwnText();
+
+            case 'plain_text':
+                return new PlainText();
+
+            default:
+                throw new Exception('text has no or invalid type');
+
+        }
+
+    }
+
 }

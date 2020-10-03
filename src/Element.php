@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Jeremeamia\Slack\BlockKit;
 
+use Jeremeamia\Slack\BlockKit\Inputs\HasConfirm;
+use Jeremeamia\Slack\BlockKit\Partials\HasOptions;
+use Jeremeamia\Slack\BlockKit\Partials\Text;
 use JsonSerializable;
 
 abstract class Element implements JsonSerializable
@@ -89,6 +92,63 @@ abstract class Element implements JsonSerializable
         }
 
         return $data;
+    }
+
+    protected function parse(array $content): Element
+    {
+
+        if (in_array(HasOptions::class, class_uses($this))) {
+            $this->parseOptions($content);
+        }
+
+        if (in_array(HasConfirm::class, class_uses($this))) {
+            $this->parseConfirm($content);
+        }
+
+        foreach ($content as $key => $value) {
+
+            if ($this->checkTextElement($key, $value)) {
+                continue;
+            }
+
+            $method = $this->snakeToCamel($key);
+
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+                continue;
+            }
+
+            $this->setExtra($key, $value);
+
+        }
+
+        return $this;
+
+    }
+
+    /**
+     * @param string $key
+     * @param string|array $value
+     * @return bool
+     */
+    private function checkTextElement(string $key, $value): bool
+    {
+
+        $method = 'set' . ucfirst($key);
+
+        if (in_array($value['type'] ?? '', Text::TYPES) && method_exists($this, $method)) {
+
+            $this->$method(Text::create($value)->parse($value));
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    protected function snakeToCamel ($str) {
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $str))));
     }
 
     /**

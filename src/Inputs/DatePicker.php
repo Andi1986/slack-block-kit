@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jeremeamia\Slack\BlockKit\Inputs;
 
 use DateTime;
+use Jeremeamia\Slack\BlockKit\Element;
 use Jeremeamia\Slack\BlockKit\Exception;
 
 class DatePicker extends InputElement
@@ -61,4 +62,5 @@ class DatePicker extends InputElement
 
         return $data;
     }
+
 }
