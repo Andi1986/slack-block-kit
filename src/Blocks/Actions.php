@@ -145,6 +145,5 @@ class Actions extends BlockElement
             $this->$method($element['action_id'] ?? null)->parse($element);
 
         }
-
     }
 }
