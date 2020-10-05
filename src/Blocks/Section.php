@@ -186,9 +186,9 @@ class Section extends BlockElement
         return $action;
     }
 
-    public function newOverflowMenuAccessory(?string $actionId = null): Inputs\OverflowMenu
+    public function newOverflowMenuAccessory(?string $actionId = null): Inputs\SelectMenus\OverflowMenu
     {
-        $action = new Inputs\OverflowMenu($actionId);
+        $action = new Inputs\SelectMenus\OverflowMenu($actionId);
         $this->setAccessory($action);
 
         return $action;
@@ -244,24 +244,36 @@ class Section extends BlockElement
                 case 'type': // skip
                     break;
 
-                case 'text': {
+                case 'text':
                     $this->setText(Partials\Text::create($value)->parse($value));
                     break;
 
-                }
+                case 'fields':
 
+                    $fields = [];
+                    foreach ($value as $field) {
+                        $fields[] = Partials\Text::create($field)->parse($field);
+                    }
+                    $this->setFields(new Partials\Fields($fields));
+                    break;
+
+                case 'accessory':
+
+                    $inputClass = 'Jeremeamia\Slack\BlockKit\Inputs\\' . $this->snakeToCamel($value['type'], true);
+                    $menuClass = 'Jeremeamia\Slack\BlockKit\Inputs\SelectMenus\\' . $this->snakeToCamel($value['type'] . '_menu', true);
+
+                    if (class_exists($inputClass)) {
+                        $class = $inputClass;
+                    } elseif (class_exists($menuClass)) {
+                        $class = $menuClass;
+                    } else {
+                        throw new Exception('missing class for type ' . $value['type']);
+                    }
+
+                    $this->setAccessory((new $class)->parse($value));
+                    break;
 
             }
-
-//            $method = $this->snakeToCamel($element['type'] ?? '');
-//
-//            if (! method_exists($this, $method)) {
-//                throw new Exception('type ' . $element['type'] . ' for the element is invalid');
-//            }
-//
-//            /** @var Element $obj */
-//            $obj = $this->$method($element['action_id'] ?? null);
-//            $obj->parse($element);
 
         }
 

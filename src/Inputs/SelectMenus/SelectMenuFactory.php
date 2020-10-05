@@ -16,18 +16,18 @@ class SelectMenuFactory extends MenuFactory
         return $this->create(ExternalSelectMenu::class);
     }
 
-    public function forUsers(): UserSelectMenu
+    public function forUsers(): UsersSelectMenu
     {
-        return $this->create(UserSelectMenu::class);
+        return $this->create(UsersSelectMenu::class);
     }
 
-    public function forChannels(): ChannelSelectMenu
+    public function forChannels(): ChannelsSelectMenu
     {
-        return $this->create(ChannelSelectMenu::class);
+        return $this->create(ChannelsSelectMenu::class);
     }
 
-    public function forConversations(): ConversationSelectMenu
+    public function forConversations(): ConversationsSelectMenu
     {
-        return $this->create(ConversationSelectMenu::class);
+        return $this->create(ConversationsSelectMenu::class);
     }
 }

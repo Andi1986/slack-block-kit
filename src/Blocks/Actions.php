@@ -94,9 +94,9 @@ class Actions extends BlockElement
         return $action;
     }
 
-    public function newOverflowMenu(?string $actionId = null): Inputs\OverflowMenu
+    public function newOverflowMenu(?string $actionId = null): Inputs\SelectMenus\OverflowMenu
     {
-        $action = new Inputs\OverflowMenu($actionId);
+        $action = new Inputs\SelectMenus\OverflowMenu($actionId);
         $this->add($action);
 
         return $action;
@@ -136,6 +136,19 @@ class Actions extends BlockElement
                 throw new Exception('element has no type!');
             }
 
+            if (strpos($element['type'], '_select') !== false) {
+
+                $class = 'Jeremeamia\Slack\BlockKit\Inputs\SelectMenus\\' . $this->snakeToCamel($element['type'] . '_menu', true);
+
+                if (! class_exists($class)) {
+                    throw new Exception('missing class: ' . $class);
+                }
+
+                $this->add((new $class)->parse($element));
+
+                continue;
+            }
+
             $method = $this->snakeToCamel($element['type'] ?? '');
 
             if (! method_exists($this, $method)) {
@@ -145,5 +158,7 @@ class Actions extends BlockElement
             $this->$method($element['action_id'] ?? null)->parse($element);
 
         }
+
+        return $this;
     }
 }

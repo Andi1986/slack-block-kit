@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jeremeamia\Slack\BlockKit\Inputs;
+namespace Jeremeamia\Slack\BlockKit\Inputs\SelectMenus;
 
 use Jeremeamia\Slack\BlockKit\Partials\{HasOptions, Option, OptionsConfig};
+use Jeremeamia\Slack\BlockKit\Inputs\{HasConfirm, InputElement};
 
 class OverflowMenu extends InputElement
 {

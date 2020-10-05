@@ -65,4 +65,29 @@ trait HasOptionGroups
             return $this->getOptionsAsArray();
         }
     }
+
+    /**
+     * @param array $content
+     * @return void
+     */
+    protected function parseOptionGroups(array &$content): void
+    {
+
+        $this->parseOptions($content);
+
+        if (! isset($content['option_groups'])) {
+            return;
+        }
+
+        foreach ($content['option_groups'] as $option) {
+
+            $group = OptionGroup::new()->parse($option);
+            $group->setParent($this);
+            $this->optionGroups[] = $group;
+
+        }
+
+        unset($content['option_groups']);
+
+    }
 }

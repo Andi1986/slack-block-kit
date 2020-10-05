@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jeremeamia\Slack\BlockKit\Inputs\SelectMenus;
 
-class ConversationSelectMenu extends SelectMenu
+class ConversationsSelectMenu extends SelectMenu
 {
     /** @var string */
     private $initialConversation;

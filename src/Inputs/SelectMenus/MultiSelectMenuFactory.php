@@ -16,18 +16,18 @@ class MultiSelectMenuFactory extends MenuFactory
         return $this->create(MultiExternalSelectMenu::class);
     }
 
-    public function forUsers(): MultiUserSelectMenu
+    public function forUsers(): MultiUsersSelectMenu
     {
-        return $this->create(MultiUserSelectMenu::class);
+        return $this->create(MultiUsersSelectMenu::class);
     }
 
-    public function forChannels(): MultiChannelSelectMenu
+    public function forChannels(): MultiChannelsSelectMenu
     {
-        return $this->create(MultiChannelSelectMenu::class);
+        return $this->create(MultiChannelsSelectMenu::class);
     }
 
-    public function forConversations(): MultiConversationSelectMenu
+    public function forConversations(): MultiConversationsSelectMenu
     {
-        return $this->create(MultiConversationSelectMenu::class);
+        return $this->create(MultiConversationsSelectMenu::class);
     }
 }

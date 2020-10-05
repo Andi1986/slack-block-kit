@@ -153,21 +153,21 @@ abstract class Type
         Inputs\Button::class          => self::BUTTON,
         Inputs\Checkboxes::class      => self::CHECKBOXES,
         Inputs\DatePicker::class      => self::DATEPICKER,
-        Inputs\OverflowMenu::class    => self::OVERFLOW_MENU,
         Inputs\RadioButtons::class    => self::RADIO_BUTTONS,
         Inputs\TextInput::class       => self::TEXT_INPUT,
 
         // Select Menus
-        SelectMenus\MultiChannelSelectMenu::class       => self::MULTI_SELECT_MENU_CHANNELS,
-        SelectMenus\MultiConversationSelectMenu::class  => self::MULTI_SELECT_MENU_CONVERSATIONS,
+        SelectMenus\MultiChannelsSelectMenu::class      => self::MULTI_SELECT_MENU_CHANNELS,
+        SelectMenus\MultiConversationsSelectMenu::class => self::MULTI_SELECT_MENU_CONVERSATIONS,
         SelectMenus\MultiExternalSelectMenu::class      => self::MULTI_SELECT_MENU_EXTERNAL,
         SelectMenus\MultiStaticSelectMenu::class        => self::MULTI_SELECT_MENU_STATIC,
-        SelectMenus\MultiUserSelectMenu::class          => self::MULTI_SELECT_MENU_USERS,
-        SelectMenus\ChannelSelectMenu::class            => self::SELECT_MENU_CHANNELS,
-        SelectMenus\ConversationSelectMenu::class       => self::SELECT_MENU_CONVERSATIONS,
+        SelectMenus\MultiUsersSelectMenu::class         => self::MULTI_SELECT_MENU_USERS,
+        SelectMenus\ChannelsSelectMenu::class           => self::SELECT_MENU_CHANNELS,
+        SelectMenus\ConversationsSelectMenu::class      => self::SELECT_MENU_CONVERSATIONS,
         SelectMenus\ExternalSelectMenu::class           => self::SELECT_MENU_EXTERNAL,
         SelectMenus\StaticSelectMenu::class             => self::SELECT_MENU_STATIC,
-        SelectMenus\UserSelectMenu::class               => self::SELECT_MENU_USERS,
+        SelectMenus\UsersSelectMenu::class              => self::SELECT_MENU_USERS,
+        SelectMenus\OverflowMenu::class                 => self::OVERFLOW_MENU,
 
         // Partials
         Partials\Confirm::class     => self::CONFIRM,

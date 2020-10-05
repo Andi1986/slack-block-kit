@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jeremeamia\Slack\BlockKit;
 
 use Jeremeamia\Slack\BlockKit\Inputs\HasConfirm;
+use Jeremeamia\Slack\BlockKit\Partials\HasOptionGroups;
 use Jeremeamia\Slack\BlockKit\Partials\HasOptions;
 use Jeremeamia\Slack\BlockKit\Partials\Text;
 use JsonSerializable;
@@ -94,11 +95,15 @@ abstract class Element implements JsonSerializable
         return $data;
     }
 
-    protected function parse(array $content): Element
+    public function parse(array $content): Element
     {
 
-        if (in_array(HasOptions::class, class_uses($this))) {
+        if (in_array(HasOptionGroups::class, class_uses($this))) {
+            $this->parseOptionGroups($content);
+            $this->parseInitialOptions($content);
+        } elseif (in_array(HasOptions::class, class_uses($this))) {
             $this->parseOptions($content);
+            $this->parseInitialOptions($content);
         }
 
         if (in_array(HasConfirm::class, class_uses($this))) {
@@ -147,8 +152,14 @@ abstract class Element implements JsonSerializable
 
     }
 
-    protected function snakeToCamel ($str) {
-        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $str))));
+    protected function snakeToCamel ($str, $ucfirst = false) {
+
+        $camel = str_replace(' ', '', ucwords(str_replace('_', ' ', $str)));
+        if ($ucfirst) {
+            return $camel;
+        }
+
+        return lcfirst($camel);
     }
 
     /**

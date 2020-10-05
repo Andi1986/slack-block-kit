@@ -172,6 +172,9 @@ trait HasOptions
 
     protected function getInitialOptionsAsArray(): array
     {
+//        echo 'INITIALOPTIONS: ';
+//        print_r($this->initialOptions);
+
         if (empty($this->initialOptions)) {
             return [];
         }
@@ -198,14 +201,32 @@ trait HasOptions
             return;
         }
 
-        $initialOptions = $content['initial_options'] ?? [$content['initial_option'] ?? []];
-
         foreach ($content['options'] as $option) {
-            $isInitial = in_array($option, $initialOptions);
-            $this->addOption((new Option())->parse($option), $isInitial);
+            $this->addOption((new Option())->parse($option));
         }
 
-        unset($content['options'], $content['initial_options'], $content['initial_option']);
+        unset($content['options']);
+
+    }
+
+    protected function parseInitialOptions(array &$content): void
+    {
+
+        $initialOptions = $content['initial_options'] ?? [];
+
+        if (! empty($content['initial_option'])) {
+            $initialOptions[] = $content['initial_option'];
+        }
+
+        foreach ($initialOptions as $initialOption) {
+
+            $initialOption = Option::new()->parse($initialOption);
+            $initialOption->setParent($this);
+            $this->initialOptions[] = $initialOption;
+
+        }
+
+        unset($content['initial_options'], $content['initial_option']);
 
     }
 
